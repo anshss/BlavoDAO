@@ -13,5 +13,7 @@ contract Registry {
         require(hasDeployed[msg.sender] != true);
         DAO t = new DAO();
         contracts.push(t);
+        userAddressToContractId[msg.sender] = contracts.length - 1;
+        hasDeployed[msg.sender] = true;
     }
 }
