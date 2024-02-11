@@ -100,6 +100,8 @@ export async function fetchIfDeployed() {
     return data;
 }
 
+export async function fetchAllDAOs() {}
+
 // Updating DAO
 
 export async function joinDao(_amount) {
@@ -215,7 +217,6 @@ export async function fetchAllProposals() {
                 votesForYes: i.votesForYes.toString(),
                 votesForNo: i.votesForNo.toString(),
                 createdAt: i.createdAt.toString(),
-                votesForNo: i.votesForNo.toString(),
                 reviewCreatedAt: i.reviewCreatedAt.toString(),
                 // status: i.status.toString(),
                 // submit: i.submit.toString(),
@@ -295,6 +296,8 @@ export async function fetchAllPeerReviewSolutions() {
     console.log("Proposals Fetched")
     return items
 }
+
+export async function fetchAllPeerRevs() {}
 
 // web3storage
 
