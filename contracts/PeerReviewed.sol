@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
+pragma experimental ABIEncoderV2;
 
 import "./NFT.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
@@ -16,7 +17,7 @@ contract PeerReviewed {
     address proposalAuthor;
 
     constructor(address daoAddress, address _proposalAuthor) {
-        _nftContract = new NFT();
+        _nftContract = new NFT("PEER", "PM");
         token = IERC20(0x7d0A0087543B8Dd1725B907bF523a5D7103adfB8);
         dao = IDao(daoAddress);
         proposalAuthor = _proposalAuthor;
@@ -43,18 +44,20 @@ contract PeerReviewed {
     enum Accept { Yes, No }
 
 
-    uint256 constant JOIN_PEER_REVIEW_MIN_SHARE = 25 * 10 ** 18;
-    uint256 constant VOTING_PERIOD = 15 days;
+    uint256 constant JOIN_PEER_REVIEW_MIN_SHARE = 50;
+    // uint256 constant VOTING_PERIOD = 15 days;
+    uint256 constant VOTING_PERIOD = 2 minutes;
     // uint256 public totalShares;
-    uint256 public nextPeerReviewId = 1;
-    uint256 userId;
+    uint256 public nextPeerReviewId = 0;
+    uint256 public userId;
+    // uint256 reviewId;
 
-    mapping (uint256 => PeerReview) peerReviews;
+    mapping (uint256 => PeerReview) public peerReviews;
     mapping (address => uint256) public userToUserId;
     mapping (address => uint256) public shares;
 
 
-    function joinPeerReview(uint256 _amount) public {
+    function joinPeerReview(uint256 _amount) public payable{
         // uint256 Share = (_amount/1000);
         require(JOIN_PEER_REVIEW_MIN_SHARE <= _amount, "More funds require to join dao");
         dao.recieveFunds(_amount);
@@ -62,9 +65,11 @@ contract PeerReviewed {
         // totalShares += Share;
         userToUserId[msg.sender] = userId;
         userId++;
+        _nftContract.mint();
     }
 
     function submitReport(string memory _name, string memory _link) public {
+        nextPeerReviewId++;
         peerReviews[nextPeerReviewId] = PeerReview(
             nextPeerReviewId,
             msg.sender,
@@ -76,7 +81,6 @@ contract PeerReviewed {
             Status.Pending,
             Accept.No
         );
-        nextPeerReviewId++;
     }
 
     function acceptReport(uint256 _reviewId, Accept _accept) public onlyproposalAuthor {
@@ -91,6 +95,7 @@ contract PeerReviewed {
 
     function claimFunds(uint256 _reviewId) public {
         require(userToUserId[msg.sender] > 0, "Not the member");
+        require(peerReviews[_reviewId].status == Status.Accepted, "Review not Accepted");
         require(block.timestamp <= peerReviews[_reviewId].createdAt + VOTING_PERIOD, "Voting period is over");
         uint256 amount = shares[msg.sender];
         require(amount> 0, "Amount is Zero");
@@ -98,4 +103,18 @@ contract PeerReviewed {
         dao.transferFunds(amount);
         userToUserId[msg.sender] = 0;
     }
+
+    function fetchAllProposals() public view returns (PeerReview[] memory) {
+            uint counter = 0;
+
+            PeerReview[] memory tickets = new PeerReview[](nextPeerReviewId);
+            for (uint i = 1; i <= nextPeerReviewId; i++) {
+                // uint currentId = i + 1;
+                PeerReview storage currentItem = peerReviews[i];
+                tickets[counter] = currentItem;
+                counter++;
+            }
+        return tickets;
+    }
+
 }
