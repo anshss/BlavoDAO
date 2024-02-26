@@ -45,7 +45,7 @@ export default function Home() {
         </div>
     );
 
-    if (loading == false && !allD.length)
+    if (loading == false && !allD?.length)
     return (
         <div>
             <div>

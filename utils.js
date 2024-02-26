@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import { create } from '@web3-storage/w3up-client'
 
-allDaoProposals = []
+let allDaoProposals = []
 
 // Creating Instances
 
