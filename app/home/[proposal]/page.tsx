@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchAllDAOs } from "../utils";
+import { fetchAllDAOs } from "../../../utils";
 
-export default function Home() {
+export default function Proposals() {
     const [allD, setAllD] = useState([]);
     const [loading, setLoading] = useState(false);
 

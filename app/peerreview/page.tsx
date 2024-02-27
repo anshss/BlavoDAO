@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchAllPeerRevs } from "../../../utils";
+import { fetchAllPeerRevs } from "../../utils";
 
 export default function PeerRev() {
     const [allP, setAllP] = useState([]);

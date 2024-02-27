@@ -3,6 +3,8 @@ import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Providers } from "./providers";
 import { Inter } from "next/font/google";
+import NavBar from "@/components/NavBar";
+import SideBar from "@/components/SideBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +25,16 @@ export default function RootLayout({
                 <title>DeSci</title>
             </head>
             <body>
-                <Providers>{children}</Providers>
+                <Providers>
+                <div>
+                    <NavBar />
+                    <div>
+                        <SideBar />
+                    {children}
+
+                    </div>
+                </div>
+                </Providers>
             </body>
         </html>
     );

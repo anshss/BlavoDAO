@@ -7,7 +7,7 @@ import {
     abiDao,
     abiPeerReviewed,
 } from "./config";
-import axios from "axios";
+// import axios from "axios";
 import { create } from '@web3-storage/w3up-client'
 
 let allDaoProposals = []
@@ -84,9 +84,9 @@ export async function getPeerReviewedContract() {
 
 // Updating Registry
 
-export async function createDAO() {
+export async function createDAO(_genre) {
     const contract = await getRegistryContract(true);
-    const tx = await contract.addCredStation();
+    const tx = await contract.createDAO(_genre);
     await tx.wait();
     console.log("Created a DAO");
 }
@@ -97,6 +97,7 @@ export async function fetchIfDeployed() {
     const contract = await getRegistryContract();
     const address = await getUserAddress();
     const data = await contract.hasDeployed(address.toString());
+    console.log("deployed contract:", data)
     return data;
 }
 
