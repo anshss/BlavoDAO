@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.18;
 pragma experimental ABIEncoderV2;
 
 import "./NFT.sol";
@@ -18,7 +18,9 @@ contract PeerReviewed {
 
     constructor(address daoAddress, address _proposalAuthor) {
         _nftContract = new NFT("PEER", "PM");
-        token = IERC20(0x7d0A0087543B8Dd1725B907bF523a5D7103adfB8);
+        // token = IERC20(0x7d0A0087543B8Dd1725B907bF523a5D7103adfB8);
+        // token = IERC20(0x5aCE63EED834DF73956fAF9Cf1cb4cd2919bCd0B);
+        token = IERC20(0xD3D083464D63a6a0d78a0DdE1F804e7233e8d977);
         dao = IDao(daoAddress);
         proposalAuthor = _proposalAuthor;
     }
