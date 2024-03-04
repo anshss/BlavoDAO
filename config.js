@@ -1,6 +1,6 @@
 export const RPCKey = ``;
 
-export const BnbRegistry = `0x18aE94089aee4e396c4Eb26B8807e1026b44471d`;
+export const BnbRegistry = `0x2f30921869dc2Cd6cD48373ef1E7c752958B990E`;
 export const BnbCurrency = `BNB`;
 export const BnbRPCaUrl = ``;
 

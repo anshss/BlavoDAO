@@ -101,7 +101,29 @@ export async function fetchIfDeployed() {
     return data;
 }
 
-export async function fetchAllDAOs() {}
+export async function fetchAllDAOs() {
+    const contract = await getRegistryContract();
+    const data = await contract.fetchAllDAO();
+
+    const items = await Promise.all(
+        data.map(async (i) => {
+            // const tokenUri = await contract.uri(i.ticketId.toString());
+            // console.log(tokenUri);
+            // const meta = await axios.get(tokenUri);
+            // let price = ethers.utils.formatEther(i.price);
+            let item = {
+                daoId: i.daoId.toString(),
+                genre: i.genre.toString(),
+                totalProposal: i.totalProposal.toString(),
+                totalMembers: i.totalMembers.toString(),
+            };
+            return item;
+        })
+    )
+
+    console.log("Dao's Fetched")
+    return items
+}
 
 // Updating DAO
 

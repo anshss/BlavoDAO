@@ -1,95 +1,83 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchAllPeerRevs } from "../../utils";
+import { fetchAllDAOs } from "../../utils";
+import NavBar from "@/components/NavBar";
+import SideBar from "@/components/SideBar";
 
-export default function PeerRev() {
-    const [allP, setAllP] = useState([]);
+export default function Home() {
+    const [allD, setAllD] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        fetchAllPeerRevsData();
+        fetchAllDAOsData();
     }, []);
 
-    async function fetchAllPeerRevsData() {
+    async function fetchAllDAOsData() {
         setLoading(true);
-        const data: any = await fetchAllPeerRevs();
-        setAllP(data);
+        const data: any = await fetchAllDAOs();
+        setAllD(data);
         setLoading(false);
     }
 
     function CardsDAO({
-        reviewId,
-        reviewAuthor,
-        name,
-        link,
-        votesForYes,
-        votesForNo,
-        createdAt,
-        // status,
-        // accept,
-
+        genre,
+        membersCount,
+        proposalsCount,
     }: {
-        reviewId: any;
-        reviewAuthor: any;
-        name: any;
-        link: any;
-        votesForYes: any;
-        votesForNo: any;
-        createdAt: any;
-        // status: any
-        // accept: any;
+        genre: any;
+        membersCount: any;
+        proposalsCount: any;
     }) {
         return (
             <div>
-                <p>{reviewId}</p>
-                <p>{reviewAuthor}</p>
-                <p>{name}</p>
+                <p>{genre}</p>
+                <p>{membersCount}</p>
+                <p>{proposalsCount}</p>
             </div>
         );
     }
 
-    if (loading == true)
+    // if (loading == true)
+    // return (
+    //     <div>
+    //         <div>
+    //             <h1>Loading..</h1>
+    //         </div>
+    //     </div>
+    // );
+
+    // if (loading == false && !allD?.length)
+    // return (
+    //     <div>
+    //         <div>
+    //             <h1>No DAO&apos;s Created</h1>
+    //         </div>
+    //     </div>
+    // );
+
     return (
         <div>
-            <div>
-                <h1>Loading..</h1>
-            </div>
-        </div>
-    );
-
-    if (loading == false && !allP.length)
-    return (
-        <div>
-            <div>
-                <h1>No Proposal&apos;s Created</h1>
-            </div>
-        </div>
-    );
-
-    return (
-        <div>
-            <h1>All DAOs</h1>
-            <div>
-                {allP.map((thing: any, i: any) => {
-                    return (
-                        <>
-                            <CardsDAO
-                                key={i}
-                                reviewId={thing?.reviewId}
-                                reviewAuthor={thing?.reviewAuthor}
-                                name={thing?.name}
-                                link={thing?.link}
-                                votesForYes={thing?.votesForYes}
-                                votesForNo={thing?.votesForNo}
-                                createdAt={thing?.createdAt}
-                                // status={thing?.status}
-                                // accept={thing?.accept}
-
-                            />
-                        </>
-                    );
-                })}
+            <NavBar />
+            <div className="flex">
+                <SideBar />
+                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] h-[100vh]">
+                    <h1>All DAOs</h1>
+                    <div>
+                        {allD?.map((thing: any, i: any) => {
+                            return (
+                                <>
+                                    <CardsDAO
+                                        key={i}
+                                        genre={thing?.genre}
+                                        membersCount={thing?.membersCount}
+                                        proposalsCount={thing?.proposalsCount}
+                                    />
+                                </>
+                            );
+                        })}
+                    </div>
+                </div>
             </div>
         </div>
     );
