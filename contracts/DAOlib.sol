@@ -12,17 +12,14 @@ library Proposal{
         uint256 votesForNo;
         uint256 createdAt;
         Status status;
-        Submit submit;
-        Raise raise;
-        Publish publish;
+        bool isSubmit ;
+        bool isRaise ;
+        bool isPublish ;
         // uint256 reviewCreatedAt;
         uint256 publishCreatedAt;
+        uint256 funds;
     }
 
     enum VotingOptions { Yes, No }
     enum Status { Accepted, Rejected, Pending }
-    enum Raise { raiseUp, raiseDown }
-    enum Publish { Yes, No }
-    enum Submit { Yes, No }
-
 }
