@@ -3,9 +3,9 @@ pragma solidity ^0.8.18;
 pragma experimental ABIEncoderV2;
 
 import "./NFT.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "./PeerReviewed.sol";
-import "./DAOlib.sol";
+import "./disciLib.sol";
 
 contract DAO {
     NFT _nftContractForDao;
@@ -32,6 +32,7 @@ contract DAO {
     //     Publish publish;
     //     // uint256 reviewCreatedAt;
     //     uint256 publishCreatedAt;
+    //     uint256 funds;
     // }
 
     // enum VotingOptions { Yes, No }
@@ -50,6 +51,7 @@ contract DAO {
     uint256 public totalShares;
     address private owner;
     uint256 peerReviewCreateAt;
+    uint256 totalFunds;
     // uint256  Share;
     // uint256 Totalmembers;
 
@@ -67,7 +69,7 @@ contract DAO {
     mapping (uint256 => Proposal.proposal) public proposals;
     mapping (address => mapping(uint256 => bool)) public votes;
     mapping (address => uint256) public  shares;
-    mapping (address => uint256) public userToUserId;
+    mapping (address => bool) public isMember;
     mapping (uint256 => address) public proposalToPeerContractAddress;
     mapping (uint256 => bool) public hasPeerDeployed;
 
@@ -90,7 +92,8 @@ contract DAO {
         token.transferFrom(msg.sender, address(this), _amount);
         shares[msg.sender] +=  Share;
         totalShares += Share;
-        userToUserId[msg.sender] = userId;
+        totalFunds += _amount;
+        isMember[msg.sender] = true;
         userId++;
         _nftContractForDao.mint();
 
@@ -119,7 +122,8 @@ contract DAO {
         shares[msg.sender] -= Share;
         token.transfer(msg.sender, amount);
         totalShares -= Share;
-        userToUserId[msg.sender] = 0;
+        totalFunds -= amount;
+        isMember[msg.sender] = false;
     }
 
     function transferFunds(uint amount) public {
@@ -141,10 +145,10 @@ contract DAO {
             0,
             block.timestamp,
             Proposal.Status.Pending,
-            Proposal.Submit.No,
-            Proposal.Raise.raiseUp,
-            Proposal.Publish.No,
-            // 0, 
+            false,
+            true,
+            false,
+            0, 
             0
         );
         createPeerReview(nextProposalId);
@@ -173,7 +177,7 @@ contract DAO {
     function submitProposal(uint256 _proposalId, string memory _link) public {
         require(proposals[_proposalId].author == msg.sender, "Only author can submit");
         proposals[_proposalId].link = _link;
-        proposals[_proposalId].submit = Proposal.Submit.Yes;
+        proposals[_proposalId].isSubmit = true;
     }
 
 
@@ -200,6 +204,7 @@ contract DAO {
 
     function createPeerReview(uint256 _proposalId) public  {
         peerReviewCreateAt = block.timestamp;
+        // require(proposals[_proposalId].status == Proposal.Status.Accepted, "proposal not yet created");
         // require(proposals[_proposalId].raise == Raise.raiseUp, "Not ready to vote");
         PeerReviewed Peer = new PeerReviewed(address(this), proposals[_proposalId].author);
         // PeerArray.push(Peer);
@@ -208,11 +213,11 @@ contract DAO {
     }
 
     // chainlink automation
-    function raiseDown(uint256 _proposalId) public  {
-        if(block.timestamp <= ( peerReviewCreateAt + VOTING_PERIOD)){
-            proposals[_proposalId].raise = Proposal.Raise.raiseDown;
-        }
-    }
+    // function raiseDown(uint256 _proposalId) public  {
+    //     if(block.timestamp <= ( peerReviewCreateAt + VOTING_PERIOD)){
+    //         proposals[_proposalId].isRaise = false;
+    //     }
+    // }
 // user modifer
     function publishProposal(uint256 _proposalId, Proposal.VotingOptions _vote, uint256 times) public {
         Proposal.proposal storage proposal = proposals[_proposalId];
@@ -224,12 +229,12 @@ contract DAO {
         if(_vote == Proposal.VotingOptions.Yes) {
            Yes += times;
             if(Yes * 100 / totalShares > 50) {
-                proposal.publish = Proposal.Publish.Yes;
+                proposal.isPublish = true;
             }
         } else {
             No += times;
             if(No * 100 / totalShares > 50) {
-                proposal.publish = Proposal.Publish.No;
+                proposal.isPublish = false;
             }
         }
     }
@@ -247,14 +252,17 @@ contract DAO {
         return tickets;
     }
 
-    // function FundProposal(uint256 _amount, uint256 _proposalId) public {
-    //     proposalIdToFunds[_proposalId] = _amount;
-    //     token.transferFrom(msg.sender, address(this), _amount);
-    // }
+    function FundProposal(uint256 _amount, uint256 _proposalId) public {
+        // proposalIdToFunds[_proposalId] = _amount;
+        token.transferFrom(msg.sender, address(this), _amount);
+        proposals[_proposalId].funds += _amount;
+        totalFunds += _amount;
+    }
 
-    // function FundDao(uint _amount) external payable {
-    //     token.transferFrom(msg.sender, address(this), _amount);
-    // }
+    function FundDao(uint _amount) external payable {
+        token.transferFrom(msg.sender, address(this), _amount);
+        totalFunds += _amount;
+    }
 
     // function withdrawAll() external payable {
     //     uint256 amount = token.balanceOf(address(this));
