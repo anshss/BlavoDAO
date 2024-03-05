@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchAllProposals } from "../../../utils";
+import { fetchAllProposals, voteProposal } from "../../../utils";
 import NavBar from "@/components/NavBar";
 import SideBar from "@/components/SideBar";
 import { usePathname } from "next/navigation";
@@ -45,7 +45,13 @@ export default function Home() {
         votesForNo: any;
         createdAt: any;
     }) {
-        const [imageLink, setImage] = useState<String | null>("");
+        async function voteYesCall() {
+            await voteProposal(proposalId, "Yes", 1);
+        }
+
+        async function voteNoCall() {
+            await voteProposal(proposalId, "No", 1);
+        }
 
         return (
             <div className="flex justify-center mt-10 w-[100%]">
@@ -57,32 +63,31 @@ export default function Home() {
                                 author: {author}
                             </p>
                             <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
-                                name: {name}
+                                name: {author}
                             </p>
                             <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
                                 link: {link}
                             </p>
-                            {/* <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
-                                votesForYes: {votesForYes}
-                            </p>
-                            <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
-                                votesForNo: {votesForNo}
-                            </p> */}
+                            <div>
+                                <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
+                                    yes votes: {votesForYes}
+                                </p>
+                                <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
+                                    no votes: {votesForNo}
+                                </p>
+                            </div>
                             <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
                                 createdAt: {createdAt}
-                            </p>
-                            <p className="font-normal text-gray-700 dark:text-gray-400 mt-2">
-                                Joining Fee: 50 tokens
                             </p>
                         </div>
 
                         <div>
                             <button
                                 className=" text-center h-[50px] w-[140px] inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                // onClick={}
+                                onClick={voteYesCall}
                             >
                                 {!loaders.publishLoader ? (
-                                    <span>Join Peer</span>
+                                    <span>Yes</span>
                                 ) : (
                                     <svg
                                         aria-hidden="true"
@@ -107,10 +112,10 @@ export default function Home() {
                             <div className="inline">
                                 <button
                                     className=" text-center h-[50px] w-[140px] inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    // onClick={}
+                                    onClick={voteNoCall}
                                 >
                                     {!loaders.publishLoader ? (
-                                        <span>Fund</span>
+                                        <span>No</span>
                                     ) : (
                                         <svg
                                             aria-hidden="true"
@@ -131,7 +136,6 @@ export default function Home() {
                                         </svg>
                                     )}
                                 </button>
-                                <input />
                             </div>
                         </div>
                     </div>

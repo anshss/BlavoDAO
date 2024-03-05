@@ -1,6 +1,6 @@
 export const RPCKey = ``;
 
-export const BnbRegistry = `0x2f30921869dc2Cd6cD48373ef1E7c752958B990E`;
+export const BnbRegistry = `0x6DE3E2C4C564F3043387171965471520595255e8`;
 export const BnbCurrency = `BNB`;
 export const BnbRPCaUrl = ``;
 
@@ -208,6 +208,37 @@ export const abiDao = `
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "FundDao",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_proposalId",
+				"type": "uint256"
+			}
+		],
+		"name": "FundProposal",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "_proposalId",
 				"type": "uint256"
 			}
@@ -282,23 +313,28 @@ export const abiDao = `
 						"type": "uint8"
 					},
 					{
-						"internalType": "enum Proposal.Submit",
-						"name": "submit",
-						"type": "uint8"
+						"internalType": "bool",
+						"name": "isSubmit",
+						"type": "bool"
 					},
 					{
-						"internalType": "enum Proposal.Raise",
-						"name": "raise",
-						"type": "uint8"
+						"internalType": "bool",
+						"name": "isRaise",
+						"type": "bool"
 					},
 					{
-						"internalType": "enum Proposal.Publish",
-						"name": "publish",
-						"type": "uint8"
+						"internalType": "bool",
+						"name": "isPublish",
+						"type": "bool"
 					},
 					{
 						"internalType": "uint256",
 						"name": "publishCreatedAt",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "funds",
 						"type": "uint256"
 					}
 				],
@@ -345,6 +381,25 @@ export const abiDao = `
 			}
 		],
 		"name": "hasPeerDeployed",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "isMember",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -458,23 +513,28 @@ export const abiDao = `
 				"type": "uint8"
 			},
 			{
-				"internalType": "enum Proposal.Submit",
-				"name": "submit",
-				"type": "uint8"
+				"internalType": "bool",
+				"name": "isSubmit",
+				"type": "bool"
 			},
 			{
-				"internalType": "enum Proposal.Raise",
-				"name": "raise",
-				"type": "uint8"
+				"internalType": "bool",
+				"name": "isRaise",
+				"type": "bool"
 			},
 			{
-				"internalType": "enum Proposal.Publish",
-				"name": "publish",
-				"type": "uint8"
+				"internalType": "bool",
+				"name": "isPublish",
+				"type": "bool"
 			},
 			{
 				"internalType": "uint256",
 				"name": "publishCreatedAt",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "funds",
 				"type": "uint256"
 			}
 		],
@@ -500,19 +560,6 @@ export const abiDao = `
 			}
 		],
 		"name": "publishProposal",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_proposalId",
-				"type": "uint256"
-			}
-		],
-		"name": "raiseDown",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -609,25 +656,6 @@ export const abiDao = `
 	{
 		"inputs": [],
 		"name": "userId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "userToUserId",
 		"outputs": [
 			{
 				"internalType": "uint256",

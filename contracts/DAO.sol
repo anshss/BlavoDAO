@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "./NFT.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "./PeerReviewed.sol";
-import "./disciLib.sol";
+import "./DAOlib.sol";
 
 contract DAO {
     NFT _nftContractForDao;

@@ -8,9 +8,9 @@ import {
     abiPeerReviewed,
 } from "./config";
 // import axios from "axios";
-import { create } from '@web3-storage/w3up-client'
+import { create } from "@web3-storage/w3up-client";
 
-let allDaoProposals = []
+let allDaoProposals = [];
 
 // Creating Instances
 
@@ -25,7 +25,11 @@ export async function getRegistryContract(providerOrSigner) {
     const modal = new web3modal();
     const connection = await modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
-    const contract = new ethers.Contract(addressRegistry, abiRegistry, provider);
+    const contract = new ethers.Contract(
+        addressRegistry,
+        abiRegistry,
+        provider
+    );
     if (providerOrSigner == true) {
         const signer = provider.getSigner();
         const contract = new ethers.Contract(
@@ -60,23 +64,47 @@ export async function getDAOContract(providerOrSigner) {
     return contract;
 }
 
-export async function getPeerReviewedContractAddress() {
-    const address = await getUserAddress(); //fetch user address
-    const contract = await getDAOContract();
-    // const id = await contract.userAddressToContractId(address.toString());
-    const contractAddress = await contract.contracts(id);
-    return contractAddress;
-}
+export async function getDAOContractByDaoId(providerOrSigner, daoId) {
+    const contractReg = await getRegistryContract();
+    const contractAddress = await contractReg.daoIdToAddress(daoId);
 
-export async function getPeerReviewedContract() {
-    const contractAddress = await getPeerReviewedContractAddress();
     const modal = new web3modal();
     const connection = await modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
-    const contract = new ethers.Contract(contractAddress, abiPeerReviewed, provider);
+    const contract = new ethers.Contract(contractAddress, abiDao, provider);
     if (providerOrSigner == true) {
         const signer = provider.getSigner();
-        const contract = new ethers.Contract(contractAddress, abiPeerReviewed, signer);
+        const contract = new ethers.Contract(contractAddress, abiDao, signer);
+        return contract;
+    }
+    return contract;
+}
+
+// export async function getPeerReviewedContractAddress() {
+//     const address = await getUserAddress(); //fetch user address
+//     const contract = await getDAOContract();
+//     // const id = await contract.userAddressToContractId(address.toString());
+//     const contractAddress = await contract.contracts(id);
+//     return contractAddress;
+// }
+
+export async function getPeerReviewedContract(contractAddress) {
+    // const contractAddress = await getPeerReviewedContractAddress();
+    const modal = new web3modal();
+    const connection = await modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const contract = new ethers.Contract(
+        contractAddress,
+        abiPeerReviewed,
+        provider
+    );
+    if (providerOrSigner == true) {
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+            contractAddress,
+            abiPeerReviewed,
+            signer
+        );
         return contract;
     }
     return contract;
@@ -97,7 +125,15 @@ export async function fetchIfDeployed() {
     const contract = await getRegistryContract();
     const address = await getUserAddress();
     const data = await contract.hasDeployed(address.toString());
-    console.log("deployed contract:", data)
+    console.log("deployed contract:", data);
+    return data;
+}
+
+export async function fetchTotalDao() {
+    const contract = await getRegistryContract();
+    const address = await getUserAddress();
+    const data = await contract.nextDaoId();
+    console.log("dao id", data);
     return data;
 }
 
@@ -119,10 +155,65 @@ export async function fetchAllDAOs() {
             };
             return item;
         })
-    )
+    );
 
-    console.log("Dao's Fetched")
-    return items
+    console.log("Dao's Fetched ", items);
+    return items;
+}
+
+export async function fetchMyCreatedDAOId() {
+    const contract = await getRegistryContract();
+    const userAddress = await getUserAddress();
+    const data = await contract.userAddressToContractId(userAddress);
+    return data;
+
+    // const items = await Promise.all(
+    //     data.map(async (i) => {
+    //         let item = {
+    //             daoId: i.daoId.toString(),
+    //             genre: i.genre.toString(),
+    //             totalProposal: i.totalProposal.toString(),
+    //             totalMembers: i.totalMembers.toString(),
+    //         };
+    //         return item;
+    //     })
+    // );
+
+    // console.log("Dao's Fetched ", items);
+    // return items;
+}
+
+export async function fetchMyDAOs() {
+    let myDAOs = [];
+
+    const contract = await getRegistryContract();
+    const data = await contract.fetchAllDAO();
+    const userAddress = await getUserAddress();
+
+    const items = await Promise.all(
+        data.map(async (i) => {
+            console.log("i", i);
+
+            const contractDao = await getDAOContractByDaoId(
+                true,
+                i.daoId.toString()
+            );
+            const isMember = await contractDao.isMember(userAddress);
+            console.log("isMember", isMember);
+            if (!isMember) return;
+
+            let subItem = {
+                daoId: i.daoId.toString(),
+                genre: i.genre.toString(),
+                totalProposal: i.totalProposal.toString(),
+                totalMembers: i.totalMembers.toString(),
+            };
+            myDAOs.push(...subItem);
+        })
+    );
+
+    console.log("Dao's Fetched ", myDAOs);
+    return myDAOs;
 }
 
 // Updating DAO
@@ -220,10 +311,10 @@ export async function FundDao(_amount) {
     console.log("Funded DAO");
 }
 
-// fetching DAO 
+// fetching DAO
 
-export async function fetchAllProposals() {
-    const contract = await getDAOContract(true);
+export async function fetchAllProposals(daoId) {
+    const contract = await getDAOContractByDaoId(true, daoId);
     const data = await contract.fetchAllProposals();
 
     const items = await Promise.all(
@@ -240,19 +331,59 @@ export async function fetchAllProposals() {
                 votesForYes: i.votesForYes.toString(),
                 votesForNo: i.votesForNo.toString(),
                 createdAt: i.createdAt.toString(),
-                reviewCreatedAt: i.reviewCreatedAt.toString(),
-                // status: i.status.toString(),
-                // submit: i.submit.toString(),
+                status: i.status,
+                submit: i.submit,
+                // reviewCreatedAt: i.reviewCreatedAt.toString(),
                 // raise: i.raise.toString(),
                 // publish: i.publish.toString(),
             };
             return item;
         })
-    )
+    );
 
-    console.log("Proposals Fetched")
+    console.log("Proposals Fetched: ", items);
     allDaoProposals = items;
-    return items
+    return items;
+}
+
+export async function fetchMyProposals() {
+    let myDAOs = [];
+
+    const contract = await getRegistryContract();
+    const data = await contract.fetchAllDAO();
+
+    await Promise.all(
+        data.map(async (i) => {
+            console.log("i", i);
+
+            const contractDao = await getDAOContractByDaoId(
+                true,
+                i.daoId.toString()
+            );
+            const allProposals = await contractDao.fetchAllProposals();
+
+            const subItems = await Promise.all(
+                allProposals.map(async (i) => {
+                    let item = {
+                        proposalId: i.proposalId.toString(),
+                        author: i.author.toString(),
+                        name: i.name.toString(),
+                        link: i.link.toString(),
+                        votesForYes: i.votesForYes.toString(),
+                        votesForNo: i.votesForNo.toString(),
+                        createdAt: i.createdAt.toString(),
+                        status: i.status,
+                        submit: i.submit,
+                    };
+                    return item;
+                })
+            );
+            myDAOs.push(...subItems);
+        })
+    );
+
+    console.log("Dao's Fetched ", myDAOs);
+    return myDAOs;
 }
 
 // Updating Peer Review
@@ -289,17 +420,21 @@ export async function claimFunds(_reviewId) {
     console.log("Funds Claimed");
 }
 
-
-export async function fetchAllPeerReviewSolutions() {
-    const contract = await getDAOContract(true);
+export async function fetchAllPeerReviewSolutionsForDAOId(daoId) {
+    const contract = await getDAOContractByDaoId(
+        true,
+        daoId.toString()
+    );
     const data = await contract.fetchAllProposals();
 
     const items = await Promise.all(
         data.map(async (i) => {
-            // const tokenUri = await contract.uri(i.ticketId.toString());
-            // console.log(tokenUri);
-            // const meta = await axios.get(tokenUri);
-            // let price = ethers.utils.formatEther(i.price);
+
+            const PeerCAddress = await contract.proposalToPeerContractAddress(i);
+            const contractPeer = await getPeerReviewedContract(PeerCAddress)
+            const data = contractPeer.fetchAllProposals()
+
+
             let item = {
                 reviewId: i.reviewId.toString(),
                 reviewAuthor: i.reviewAuthor.toString(),
@@ -314,31 +449,50 @@ export async function fetchAllPeerReviewSolutions() {
             };
             return item;
         })
-    )
+    );
 
-    console.log("Proposals Fetched")
-    return items
+    console.log("Proposals Fetched");
+    return items;
 }
 
-export async function fetchAllPeerRevs() {}
+export async function fetchAllPeerRev() {
+    let allPeerRev = [];
+
+    const contract = await getRegistryContract();
+    const data = await contract.fetchAllDAO();
+
+    await Promise.all(
+        data.map(async (i) => {
+            console.log("i", i);
+
+            const data = await fetchAllPeerReviewSolutionsForDAOId(i)
+
+
+            allPeerRev.push();
+        })
+    );
+
+    console.log("All Peer Revs ", allPeerRev);
+    return allPeerRev;
+}
 
 // web3storage
 
 async function makeStorageClient() {
-    const client = await create()
-    const space = await client.createSpace('iks')
-    const myAccount = await client.login('anshsaxena4190@gmail.com')
-    console.log(space)
-    await myAccount.provision(space.did())
-    await space.createRecovery(myAccount.did())
-    await space.save()
-    await client.setCurrentSpace(space.did())
+    const client = await create();
+    const space = await client.createSpace("iks");
+    const myAccount = await client.login("anshsaxena4190@gmail.com");
+    console.log(space);
+    await myAccount.provision(space.did());
+    await space.createRecovery(myAccount.did());
+    await space.save();
+    await client.setCurrentSpace(space.did());
 
-    return client
+    return client;
 }
 
 export const uploadToIPFS = async (files) => {
     const client = await makeStorageClient();
-    const directoryCid = await client.uploadDirectory(files)
-    return directoryCid
-}
+    const directoryCid = await client.uploadDirectory(files);
+    return directoryCid;
+};

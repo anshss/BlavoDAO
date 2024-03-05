@@ -15,10 +15,10 @@ export default function Home() {
     const { push } = useRouter();
 
     useEffect(() => {
-        fetchPeerReviewData();
+        fetchAllDAOsData();
     }, []);
 
-    async function fetchPeerReviewData() {
+    async function fetchAllDAOsData() {
         setLoading(true);
         const data: any = await fetchAllDAOs();
         setAllD(data);
@@ -101,7 +101,7 @@ export default function Home() {
                     {/* <h1>All DAOs</h1> */}
                     <div className="mt-10">
                         <h1 className="font-bold text-3xl text-center">
-                            Peer Reviews
+                            Available DAOs
                         </h1>
                     </div>
                     <div>
