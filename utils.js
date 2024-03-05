@@ -420,6 +420,42 @@ export async function claimFunds(_reviewId) {
     console.log("Funds Claimed");
 }
 
+export async function fetchPeerFromProposalId(proposalId) {
+    const contract = await getDAOContractByDaoId(
+        true,
+        daoId.toString()
+    );
+    
+    const PeerCAddress = await contract.proposalToPeerContractAddress(proposalId);
+    const contractPeer = await getPeerReviewedContract(PeerCAddress)
+    const data = contractPeer.fetchAllProposals()
+
+
+    const items = await Promise.all(
+        data.map(async (i) => {
+
+            let item = {
+                reviewId: i.reviewId.toString(),
+                reviewAuthor: i.reviewAuthor.toString(),
+                name: i.name.toString(),
+                link: i.link.toString(),
+                votesForYes: i.votesForYes.toString(),
+                votesForNo: i.votesForNo.toString(),
+                createdAt: i.createdAt.toString(),
+                votesForNo: i.votesForNo.toString(),
+                status: i.status.toString(),
+                accept: i.accept.toString(),
+            };
+            return item;
+        })
+    );
+
+    console.log("Peer reports for this solution: ", items)
+
+    return items
+
+}
+
 export async function fetchAllPeerReviewSolutionsForDAOId(daoId) {
     const contract = await getDAOContractByDaoId(
         true,

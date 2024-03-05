@@ -172,13 +172,11 @@ export default function Dao() {
         }, []);
 
         async function fetchMyDAOsData() {
-            const data = await fetchMyDAOs();
+            const data: any = await fetchMyDAOs();
             setAllMyD(data);
         }
 
-        function pushPage() {
-            push(`/home/${allMyD.daoId}`);
-        }
+
 
         function CardsDAO({
             genre,
@@ -191,6 +189,12 @@ export default function Dao() {
             proposalsCount: any;
             daoId: any;
         }) {
+
+            function pushPage() {
+                push(`/home/${daoId}`);
+            }
+
+
             return (
                 <div className="flex justify-center mt-10 w-[100%]">
                     <div className="flex w-[70%] gap-5 p-6 cursor-pointer bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">

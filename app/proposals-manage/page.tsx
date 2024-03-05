@@ -105,7 +105,7 @@ export default function Home() {
             <NavBar />
             <div className="flex">
                 <SideBar />
-                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] h-[100vh]">
+                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] min-h-[100vh]">
                     {/* <h1>All DAOs</h1> */}
                     <div className="mt-10">
                         <h1 className="font-bold text-3xl text-center">

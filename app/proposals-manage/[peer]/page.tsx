@@ -1,18 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchMyProposals, voteProposal } from "../../../utils";
+import { fetchPeerFromProposalId, voteProposal } from "../../../utils";
 import NavBar from "@/components/NavBar";
 import SideBar from "@/components/SideBar";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function Home() {
-    const [allP, setAllP] = useState([]);
+    const [allPR, setAllPeerReports] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loaders, setLoaders] = useState({
         publishLoader: false,
     });
     const { push } = useRouter();
+
+    const pathName = usePathname();
+    let proposalId = pathName?.split("/")[2];
+    console.log("proposal id", proposalId);
 
     useEffect(() => {
         fetchMyProposalsData();
@@ -20,8 +25,8 @@ export default function Home() {
 
     async function fetchMyProposalsData() {
         setLoading(true);
-        const data: any = await fetchMyProposals();
-        setAllP(data);
+        const data: any = await fetchPeerFromProposalId(proposalId);
+        setAllPeerReports(data);
         setLoading(false);
     }
 
@@ -82,7 +87,7 @@ export default function Home() {
                             </p>
                         </div>
 
-                        <div>
+                        <div className="flex gap-[4%]">
                             <button
                                 className=" text-center h-[50px] w-[140px] inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 onClick={voteYesCall}
@@ -105,12 +110,13 @@ export default function Home() {
         );
     }
 
-    return (
-        <div>
+    if (loading == false && allPR.length == 0) {
+        return(
+            <div>
             <NavBar />
             <div className="flex">
                 <SideBar />
-                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] h-[100vh]">
+                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] min-h-[100vh]">
                     {/* <h1>All DAOs</h1> */}
                     <div className="mt-10">
                         <h1 className="font-bold text-3xl text-center">
@@ -118,7 +124,28 @@ export default function Home() {
                         </h1>
                     </div>
                     <div>
-                        {allP?.map((thing: any, i: any) => {
+                        <h1>No Peer Reports submitted yet</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        )
+    }
+
+    return (
+        <div>
+            <NavBar />
+            <div className="flex">
+                <SideBar />
+                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] min-h-[100vh]">
+                    {/* <h1>All DAOs</h1> */}
+                    <div className="mt-10">
+                        <h1 className="font-bold text-3xl text-center">
+                            Peer Reports
+                        </h1>
+                    </div>
+                    <div>
+                        {allPR?.map((thing: any, i: any) => {
                             return (
                                 <>
                                     <CardsDAO

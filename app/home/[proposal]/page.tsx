@@ -13,6 +13,12 @@ export default function Home() {
         publishLoader: false,
     });
 
+    const [formInput, setFormInput] = useState({
+        proposalName: "lmao I can't think",
+        problemUrl:
+            "1 BNB",
+    });
+
     const pathName = usePathname();
     let daoId = pathName?.split("/")[2];
     console.log("dao id", daoId);
@@ -76,7 +82,7 @@ export default function Home() {
                             </p>
                         </div>
 
-                        <div>
+                        <div className="flex gap-[4%]">
                             <button
                                 className=" text-center h-[50px] w-[140px] inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 // onClick={}
@@ -104,7 +110,7 @@ export default function Home() {
                                 )}
                             </button>
 
-                            <div className="inline">
+                            {/* <div className="flex gap-[4%]"> */}
                                 <button
                                     className=" text-center h-[50px] w-[140px] inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     // onClick={}
@@ -131,7 +137,23 @@ export default function Home() {
                                         </svg>
                                     )}
                                 </button>
-                                <input />
+                                <div className="w-[20%]">
+                                        <input
+                                            type="search"
+                                            className="block p-4 z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                            placeholder="Problem URL"
+                                            required
+                                            value={formInput.problemUrl}
+                                            onChange={(e) => {
+                                                setFormInput({
+                                                    ...formInput,
+                                                    problemUrl:
+                                                        e.target.value,
+                                                });
+                                            }}
+                                        />
+                                    {/* </div> */}
+                                {/* <input /> */}
                             </div>
                         </div>
                     </div>
