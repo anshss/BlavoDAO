@@ -64,12 +64,12 @@ export default function Dao() {
 
     function CreateDaoDisplay() {
         return (
-            <div>
-                <div className="relative w-full">
+            <div className="flex flex-col w-[80%] ml-[10%] mt-[15px]">
+                <div className="relative w-full mb-[10px]">
                     <input
                         type="search"
                         className="block p-4 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-l-gray-50 border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-                        placeholder="Model Name"
+                        placeholder="DAO Genre"
                         required
                         value={formInput.genre}
                         onChange={(e) => {
@@ -248,7 +248,7 @@ export default function Dao() {
             <NavBar />
             <div className="flex">
                 <SideBar />
-                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] h-[100vh]">
+                <div className="text-white p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] min-h-[100vh]">
                     <div className="mt-10">
                         <h1 className="font-bold text-3xl text-center">
                             Manage DAOs

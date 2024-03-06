@@ -30,16 +30,18 @@ export default function Home() {
         membersCount,
         proposalsCount,
         daoId,
+        proposalId,
     }: {
         genre: any;
         membersCount: any;
         proposalsCount: any;
         daoId: any;
+        proposalId: any;
     }) {
         const [imageLink, setImage] = useState<String | null>("");
 
         function pushPage() {
-            push(`/proposals/${daoId}`);
+            push(`/peerreview/${daoId}/${proposalId}`);
         }
 
         return (
@@ -55,9 +57,9 @@ export default function Home() {
                                 <p className="font-normal text-gray-700 dark:text-gray-400">
                                     Members: {membersCount}
                                 </p>
-                                <p className="font-normal text-gray-700 dark:text-gray-400">
+                                {/* <p className="font-normal text-gray-700 dark:text-gray-400">
                                     Proposals: {proposalsCount}
-                                </p>
+                                </p> */}
                             </div>
                         </div>
                         <button
@@ -65,7 +67,7 @@ export default function Home() {
                             onClick={pushPage}
                         >
                             {!loaders.publishLoader ? (
-                                <span>Create Proposal</span>
+                                <span>Submit Report</span>
                             ) : (
                                 <svg
                                     aria-hidden="true"
@@ -114,6 +116,7 @@ export default function Home() {
                                         membersCount={thing?.totalMembers}
                                         proposalsCount={thing?.totalProposal}
                                         daoId={thing?.daoId}
+                                        proposalId={1}
                                     />
                                 </>
                             );

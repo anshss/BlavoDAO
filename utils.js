@@ -192,7 +192,7 @@ export async function fetchMyDAOs() {
 
     const items = await Promise.all(
         data.map(async (i) => {
-            console.log("i", i);
+            console.log("i",  i);
 
             const contractDao = await getDAOContractByDaoId(
                 true,
@@ -218,13 +218,10 @@ export async function fetchMyDAOs() {
 
 // Updating DAO
 
-export async function joinDao(_amount) {
-    const contract = await getDAOContract(true);
-    const weiPrice = ethers.utils.parseUnits(_amount.toString(), "ether");
-    const tx = await contract.joinDao(_amount, {
-        value: weiPrice,
-        gasLimit: 1000000,
-    });
+export async function joinDao(daoId, _amount) {
+    const contract = await getDAOContractByDaoId(true, daoId);
+    // const weiPrice = ethers.utils.parseUnits(_amount, "ether");
+    const tx = await contract.joinDao(_amount);
     await tx.wait();
     console.log("DAO Joined");
 }
@@ -300,13 +297,10 @@ export async function FundProposal(_amount, _proposalId) {
     console.log("Funded Proposal");
 }
 
-export async function FundDao(_amount) {
-    const contract = await getDAOContract(true);
+export async function FundDao(_amount, daoId) {
+    const contract = await getDAOContractByDaoId(true, daoId);
     const weiPrice = ethers.utils.parseUnits(_amount.toString(), "ether");
-    const tx = await contract.FundDao(_amount, {
-        value: weiPrice,
-        gasLimit: 1000000,
-    });
+    const tx = await contract.FundDao(_amount);
     await tx.wait();
     console.log("Funded DAO");
 }

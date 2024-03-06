@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createProposal } from "../../../utils";
+import { createProposal } from "../../../../utils";
 import NavBar from "@/components/NavBar";
 import SideBar from "@/components/SideBar";
 import { useRouter } from "next/navigation";
@@ -42,11 +42,11 @@ export default function Home() {
                 {/* <div className="flex"> */}
                 <SideBar />
 
-                <div className="p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] min-h-[100vh]">
+                <div className="p-4 sm:ml-64 pt-20 bg-gray-900 w-full h-[100%] h-[100vh]">
                     <div className="text-white">
                         <div className="mt-10">
                             <h1 className="font-bold text-3xl text-center">
-                                Devise Proposal
+                                Submit Report
                             </h1>
                         </div>
 
@@ -77,7 +77,7 @@ export default function Home() {
 
                                 <div className="flex">
                                     <div className="w-[12%] justify-center flex-shrink-0 cursor-default z-10 inline-flex items-center py-4 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700  dark:focus:ring-gray-700 dark:text-gray-400 dark:border-gray-600">
-                                        <p>Problem </p>
+                                        <p>Report</p>
                                     </div>
                                     <div className="relative w-full">
                                         <input

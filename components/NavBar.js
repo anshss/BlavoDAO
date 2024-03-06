@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { loginDataverse } from "@/utils";
 
 export default function NavBar() {
     return (
@@ -9,11 +8,10 @@ export default function NavBar() {
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-start">
-                        <h2 className="">Wafers</h2>
+                        <h2 className="">BlavoDAO</h2>
                     </div>
                     <div className="flex items-center">
                         <div className="flex items-center ml-3">
-                            {/* <button onClick={loginDataverse}>dataverse</button> */}
                             <ConnectButton chainStatus="icon" accountStatus="avatar"/>
                         </div>
                     </div>
